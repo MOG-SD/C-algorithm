@@ -1,0 +1,82 @@
+#include<iostream>
+#include<iomanip>
+#include<string>
+#include<cstdio>
+#include<bitset>
+#include<cstring>
+#include<queue>
+#include<deque>
+#include<map>
+#include<cmath>
+#include<stack>
+#include<set>
+#include<vector>
+#include<algorithm>
+#include<ctime>
+#define endl '\n';
+using namespace std;
+typedef long long ll;
+
+
+// 思路
+//如果不考虑a数组元素之间的整除关系,a数组就是n根据唯一分解定理
+//分解后的结果。
+//所以 假设 n = a1^p1 * a2 ^ p2 * ... * an ^ pn
+//只要找到max(p1,p2...pn),假设为p,对应的底数为a。
+//可以构建的数组就是:(p - 1) 个 a,最后一个数就是 a * (其他的所有数)。
+
+ll MAX = 1e5+10;
+ll prime[(int)1e5+10];
+bool isprime[(int)1e5+10];
+
+
+void Listprime(){
+	int pos = 0;
+	for(int i=0;i<MAX;i++)	isprime[i] = true;
+	for(int i=2;i<MAX;i++){
+		if(isprime[i]){
+			prime[pos++] = i;
+			for(int j=2;i*j<MAX;j++){
+				isprime[i*j] = false;
+			}
+		}
+	}
+}
+
+int main(){
+	int q;
+	cin>>q;
+	cout << fixed <<setprecision(0);
+	Listprime();
+	while(q--){
+		ll n,max=0,maxp;
+		cin>>n;
+		ll tn = n;
+//		cout<<isprime[n]<<endl;
+//		if(isprime[n]){
+//			cout<<1<<endl;
+//			cout<<n<<endl;
+//			continue;
+//		}
+		for(int i=0;prime[i]<=sqrt(n);i++){
+			int cnt = 0;
+			while(n%prime[i] == 0){
+				n /= prime[i];
+				cnt++;
+			}
+			if(cnt>max)	max = cnt,maxp = prime[i];
+		}
+		if(max>0){
+			cout<<max<<endl;
+			for(int i = 0;i<max-1;i++){
+				cout<<maxp<<" ";
+			}
+			cout<<tn/pow(maxp,max-1)<<endl;
+		}else{
+			cout<<1<<endl;
+			cout<<tn<<endl;
+		}
+		
+	} 
+	return 0;
+}
